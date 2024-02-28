@@ -49,5 +49,42 @@ public class JuegoBuscaMinas {
 			return 60;
 		return 10;
 	}
+	
+	private int numCasillasMax() {
+		if (dificultad == 1)
+			return 12;
+		if (dificultad == 2)
+			return 16;
+		return 8;
+	}
+	
+	public boolean descubrirCasilla(int fila, int columna) {
+		//ha descubrir
+		if(tablero[fila][columna].isEstaMarcada()== true || tablero[fila][columna].isEstaOculta()== false && fila> numCasillasMax() && columna>=numCasillasMax())
+			return false;
+		else
+			return true;
+	}
+	
+	public boolean marcarCasilla(int fila, int columna) {
+		//ha marcar
+		if(tablero[fila][columna].isEstaMarcada()== true || tablero[fila][columna].isEstaOculta()== false && fila> numCasillasMax() && columna>=numCasillasMax())
+			return false;
+		else
+			return true;
+	}
+	
+	public int causaTerminacionJuego() {
+		if(haMarcadoTodasMinas==true) {//ha ganado
+			return 1;
+		}
+		if(haDescubiertoCasillaConMina==true) {//ha perdido
+			return 2;
+		}
+		if (haMarcadoCasillaSinMina==true) {//ha perdido
+			return 3;
+		}
+		return 0;//continua partida
+	}
 
 }
