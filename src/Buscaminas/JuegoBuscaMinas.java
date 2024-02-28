@@ -3,7 +3,7 @@ package Buscaminas;
 import java.util.Random;
 
 public class JuegoBuscaMinas {
-	private int[][] tablero;
+	private Casilla[][] tablero;
 	private int dificultad;
 	private int tam;
 
@@ -17,23 +17,29 @@ public class JuegoBuscaMinas {
 		if (dificultad == 2)
 			this.tam = 16;
 
-		this.tablero = new int[tam][tam];
+		this.tablero = new Casilla[tam][tam];
 	}
 
 	// Falta que solo sea el número de minas determinadas
 	public void iniciarTablero() {
-		int minas = numeroMinas();
-		System.out.println(minas);
+		Random random = new Random();
+		int fila, columna;
+		int minasColocadas = 0;
 
-		for (int i = 0; i < tablero.length; i++) {
-			for (int j = 0; j < tablero.length; j++) {
-				if (ponerMina()) {
-					tablero[i][j] = -1;
-					minas--;
-				}
-				System.out.println("[" + i + "][" + j + "]=" + tablero[i][j]);
-			}
+		for (int minas = numeroMinas(); minas > 0; minas--) {
+			System.out.println(minas);
+			do {
+				fila = random.nextInt(tam);
+				columna = random.nextInt(tam);
+			} while (tablero[fila][columna] != 0);
+			minasColocadas++;
+			tablero[fila][columna] = -1;
 		}
+		System.out.println("\n" + minasColocadas + "\n");
+		for (int i = 0; i < tablero.length; i++)
+			for (int j = 0; j < tablero.length; j++)
+				System.out.println(Casilla);
+
 	}
 
 	private int numeroMinas() {
@@ -44,12 +50,4 @@ public class JuegoBuscaMinas {
 		return 10;
 	}
 
-	private boolean ponerMina() {
-		Random random = new Random();
-		int hayMina = random.nextInt(2);
-
-		if (hayMina == 0)
-			return false;
-		return true;
-	}
 }
