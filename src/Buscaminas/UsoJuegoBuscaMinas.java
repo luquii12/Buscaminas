@@ -3,8 +3,10 @@ package Buscaminas;
 public class UsoJuegoBuscaMinas {
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
+		JuegoBuscaMinas juego = new JuegoBuscaMinas(0);
 
+		juego.iniciarTablero();
+		
 	}
 
 }
