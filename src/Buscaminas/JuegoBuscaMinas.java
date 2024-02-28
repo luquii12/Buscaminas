@@ -18,28 +18,56 @@ public class JuegoBuscaMinas {
 			this.tam = 16;
 
 		this.tablero = new Casilla[tam][tam];
+
+		iniciarTablero();
 	}
 
-	// Falta que solo sea el número de minas determinadas
 	public void iniciarTablero() {
+		instanciarCasillas();
+
+		colocarMinas();
+	}
+
+	// Falta cuadrar el tablero cuando el nº de fila o columna es de dos dígitos
+	public void imprimirTablero() {
+		// Columnas cabecera
+		System.out.print("    ");
+		for (int columnas = 0; columnas < tablero.length; columnas++)
+			System.out.print("|" + (columnas + 1) + "| ");
+		System.out.println("\n");
+
+		// Resto tablero
+		for (int i = 0; i < tablero.length; i++) {
+			System.out.print("|" + (i + 1) + "| ");
+			for (int j = 0; j < tablero.length; j++) {
+				if (tablero[i][j].isEstaOculta())
+					System.out.print("|-| ");
+			}
+			System.out.println("\n");
+		}
+	}
+
+	// Métodos privados
+
+	private void instanciarCasillas() {
+		for (int i = 0; i < tablero.length; i++)
+			for (int j = 0; j < tablero.length; j++)
+				tablero[i][j] = new Casilla();
+	}
+
+	private void colocarMinas() {
 		Random random = new Random();
 		int fila, columna;
 		int minasColocadas = 0;
 
 		for (int minas = numeroMinas(); minas > 0; minas--) {
-			System.out.println(minas);
 			do {
 				fila = random.nextInt(tam);
 				columna = random.nextInt(tam);
-			} while (tablero[fila][columna] != 0);
+			} while (tablero[fila][columna].isTieneMina());
 			minasColocadas++;
-			tablero[fila][columna] = -1;
+			tablero[fila][columna].setTieneMina(true);
 		}
-		System.out.println("\n" + minasColocadas + "\n");
-		for (int i = 0; i < tablero.length; i++)
-			for (int j = 0; j < tablero.length; j++)
-				System.out.println(Casilla);
-
 	}
 
 	private int numeroMinas() {
@@ -49,5 +77,4 @@ public class JuegoBuscaMinas {
 			return 60;
 		return 10;
 	}
-
 }
