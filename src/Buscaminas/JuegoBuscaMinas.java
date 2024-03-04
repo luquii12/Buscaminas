@@ -50,17 +50,9 @@ public class JuegoBuscaMinas {
 		return 10;
 	}
 	
-	private int numCasillasMax() {
-		if (dificultad == 1)
-			return 12;
-		if (dificultad == 2)
-			return 16;
-		return 8;
-	}
-	
 	public boolean descubrirCasilla(int fila, int columna) {
 		//ha descubrir
-		if(tablero[fila][columna].isEstaMarcada()== true || tablero[fila][columna].isEstaOculta()== false && fila> numCasillasMax() && columna>=numCasillasMax())
+		if(tablero[fila][columna].isEstaMarcada()== true || tablero[fila][columna].isEstaOculta()== false && fila> tam && columna>=tam)
 			return false;
 		else
 			return true;
@@ -68,7 +60,7 @@ public class JuegoBuscaMinas {
 	
 	public boolean marcarCasilla(int fila, int columna) {
 		//ha marcar
-		if(tablero[fila][columna].isEstaMarcada()== true || tablero[fila][columna].isEstaOculta()== false && fila> numCasillasMax() && columna>=numCasillasMax())
+		if(tablero[fila][columna].isEstaMarcada()== true || tablero[fila][columna].isEstaOculta()== false && fila> tam && columna>=tam)
 			return false;
 		else
 			return true;
