@@ -51,32 +51,82 @@ public class JuegoBuscaMinas {
 	}
 	
 	public boolean descubrirCasilla(int fila, int columna) {
-		//ha descubrir
-		if(tablero[fila][columna].isEstaMarcada()== true || tablero[fila][columna].isEstaOculta()== false && fila> tam && columna>=tam)
-			return false;
-		else
-			return true;
-	}
-	
-	public boolean marcarCasilla(int fila, int columna) {
-		//ha marcar
-		if(tablero[fila][columna].isEstaMarcada()== true || tablero[fila][columna].isEstaOculta()== false && fila> tam && columna>=tam)
-			return false;
-		else
-			return true;
-	}
-	
-	public int causaTerminacionJuego() {
-		if(haMarcadoTodasMinas==true) {//ha ganado
-			return 1;
-		}
-		if(haDescubiertoCasillaConMina==true) {//ha perdido
-			return 2;
-		}
-		if (haMarcadoCasillaSinMina==true) {//ha perdido
-			return 3;
-		}
-		return 0;//continua partida
+	    if (fila >= 0 && fila < tam && columna >= 0 && columna < tam) {
+	        Casilla casilla = tablero[fila][columna];
+	        if (!casilla.isEstaMarcada() && casilla.isEstaOculta()) {
+	            casilla.setEstaOculta(false); // Cambiar el estado de oculto a revelado
+	            if (casilla.isTieneMina()) {
+	                haDescubiertoCasillaConMina = true;
+	            }
+	            return true;
+	        }
+	    }
+	    return false;
 	}
 
+	public boolean marcarCasilla(int fila, int columna) {
+	    if (fila >= 0 && fila < tam && columna >= 0 && columna < tam) {
+	        Casilla casilla = tablero[fila][columna];
+	        if (!casilla.isEstaMarcada() && casilla.isEstaOculta()) {
+	            casilla.setEstaMarcada(true);
+	            if (casilla.isTieneMina()) {
+	                haMarcadoTodasMinas = haMarcadoTodasMinas();
+	            } else {
+	                haMarcadoCasillaSinMina = true;
+	            }
+	            return true;
+	        }
+	    }
+	    return false;
+	}
+
+	
+	private boolean haMarcadoTodasMinas() {
+        for (int i = 0; i < tam; i++) {
+            for (int j = 0; j < tam; j++) {
+                Casilla casilla = tablero[i][j];
+                if (casilla != null && casilla.isTieneMina() && !casilla.isEstaMarcada()) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public boolean haDescubiertoCasillasConMina() {
+        for (int i = 0; i < tam; i++) {
+            for (int j = 0; j < tam; j++) {
+                Casilla casilla = tablero[i][j];
+                if (casilla != null && casilla.isTieneMina() && !casilla.isEstaOculta()) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean haMarcadoCasillaSinMina() {
+        for (int i = 0; i < tam; i++) {
+            for (int j = 0; j < tam; j++) {
+                Casilla casilla = tablero[i][j];
+                if (casilla != null && !casilla.isTieneMina() && casilla.isEstaMarcada()) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public int causaTerminacionJuego() {
+        if (haMarcadoTodasMinas()) {
+            return 1; // Ha ganado
+        }
+        if (haDescubiertoCasillasConMina()) {
+            return 2; // Ha perdido
+        }
+        if (haMarcadoCasillaSinMina()) {
+            return 3; // Ha perdido
+        }
+        return 0; // Continua partida
+    }
 }
