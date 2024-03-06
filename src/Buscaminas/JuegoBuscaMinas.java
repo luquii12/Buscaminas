@@ -117,7 +117,7 @@ public class JuegoBuscaMinas {
 	    return false;
 	}
 
-<<<<<<< HEAD
+
 	public boolean marcarCasilla(int fila, int columna) {
 	    if (fila >= 0 && fila < tam && columna >= 0 && columna < tam) {
 	        Casilla casilla = tablero[fila][columna];
@@ -183,7 +183,7 @@ public class JuegoBuscaMinas {
         }
         return 0; // Continua partida
     }
-=======
+    
 	private void imprimirCabeceraFilas() {
 		System.out.print("     ");
 		for (int columnas = 0; columnas < tablero.length; columnas++)
@@ -288,5 +288,4 @@ public class JuegoBuscaMinas {
 
 		tablero[fila][columna].setNumMinasCercanas(minasCercanas);
 	}
->>>>>>> refs/remotes/origin/master
 }
