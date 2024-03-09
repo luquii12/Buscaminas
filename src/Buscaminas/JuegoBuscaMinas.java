@@ -10,11 +10,11 @@ public class JuegoBuscaMinas {
 	public JuegoBuscaMinas(int dificultad) {
 		this.dificultad = dificultad;
 
-		if (dificultad == 0)
-			this.tam = 8;
 		if (dificultad == 1)
-			this.tam = 12;
+			this.tam = 8;
 		if (dificultad == 2)
+			this.tam = 12;
+		if (dificultad == 3)
 			this.tam = 16;
 
 		this.tablero = new Casilla[tam][tam];
@@ -130,9 +130,9 @@ public class JuegoBuscaMinas {
 	}
 
 	private int numeroMinas() {
-		if (dificultad == 1)
-			return 30;
 		if (dificultad == 2)
+			return 30;
+		if (dificultad == 3)
 			return 60;
 		return 10;
 	}
