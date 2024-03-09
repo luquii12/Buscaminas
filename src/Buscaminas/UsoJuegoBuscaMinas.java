@@ -48,7 +48,8 @@ public class UsoJuegoBuscaMinas {
 
 	public static void mostrarInstrucciones() {
 		System.out.println("Introduzca una \"d\", descubrir, o un \"m\", marcar, "
-				+ "\nseguido de la fila (1-8) y la columna (1-8) " + "\nde la casilla que se quiere descubrir/marcar.");
+				+ "\nseguido de la fila (1-8/12/16) y la columna (1-8/12/16) " + "\nde la casilla que se quiere descubrir/marcar.");
+		System.out.println("8 -> Principiante \n12 -> Amateur \n16 -> Avanzado");
 		System.out.println("El formato tiene que ser el siguiente: d/m f,c");
 	}
 
