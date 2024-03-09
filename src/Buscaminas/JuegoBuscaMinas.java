@@ -38,7 +38,7 @@ public class JuegoBuscaMinas {
 				System.out.print("|" + (i + 1) + "| ");
 			for (int j = 0; j < tablero.length; j++) {
 				if (j < 9) {
-					if (tablero[i][j].isEstaOculta())
+					if (tablero[i][j].isEstaOculta() && !tablero[i][j].isEstaMarcada())
 						System.out.print("|-| ");
 					if (tablero[i][j].isEstaMarcada())
 						System.out.print("|F| ");
@@ -47,7 +47,7 @@ public class JuegoBuscaMinas {
 						System.out.print("|" + tablero[i][j].getNumMinasCercanas() + "| ");
 					}
 				} else {
-					if (tablero[i][j].isEstaOculta())
+					if (tablero[i][j].isEstaOculta() && !tablero[i][j].isEstaMarcada())
 						System.out.print("|--| ");
 					if (tablero[i][j].isEstaMarcada())
 						System.out.print("|F | ");
@@ -82,7 +82,6 @@ public class JuegoBuscaMinas {
 		}
 		// Pruebas --> Hasta que estén hechas marcaCasilla() y descubrirCasilla()
 		tablero[5][5].setEstaMarcada(true);
-		tablero[5][5].setEstaOculta(false);
 
 		tablero[0][0].setEstaOculta(false);
 		tablero[0][4].setEstaOculta(false);
