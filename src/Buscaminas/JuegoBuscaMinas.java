@@ -61,6 +61,41 @@ public class JuegoBuscaMinas {
 		}
 	}
 
+	public boolean descubrirCasilla(int fila, int columna) {
+		if (fila >= 0 && fila < tam && columna >= 0 && columna < tam) {
+			Casilla casilla = tablero[fila][columna];
+			if (!casilla.isEstaMarcada() && casilla.isEstaOculta()) {
+				casilla.setEstaOculta(false); // Cambiar el estado de oculto a revelado
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public boolean marcarCasilla(int fila, int columna) {
+		if (fila >= 0 && fila < tam && columna >= 0 && columna < tam) {
+			Casilla casilla = tablero[fila][columna];
+			if (!casilla.isEstaMarcada() && casilla.isEstaOculta()) {
+				casilla.setEstaMarcada(true);
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public int causaTerminacionJuego() {
+		if (haMarcadoTodasMinas()) {
+			return 1; // Ha ganado
+		}
+		if (haDescubiertoCasillaConMina()) {
+			return 2; // Ha perdido
+		}
+		if (haMarcadoCasillaSinMina()) {
+			return 3; // Ha perdido
+		}
+		return 0; // Continua partida
+	}
+
 	// Métodos privados
 
 	private void instanciarCasillas() {
@@ -101,88 +136,19 @@ public class JuegoBuscaMinas {
 			return 60;
 		return 10;
 	}
-	
-	public boolean descubrirCasilla(int fila, int columna) {
-	    if (fila >= 0 && fila < tam && columna >= 0 && columna < tam) {
-	        Casilla casilla = tablero[fila][columna];
-	        if (!casilla.isEstaMarcada() && casilla.isEstaOculta()) {
-	            casilla.setEstaOculta(false); // Cambiar el estado de oculto a revelado
-	            if (casilla.isTieneMina()) {
-	                haDescubiertoCasillaConMina = true;
-	            }
-	            return true;
-	        }
-	    }
-	    return false;
-	}
 
-
-	public boolean marcarCasilla(int fila, int columna) {
-	    if (fila >= 0 && fila < tam && columna >= 0 && columna < tam) {
-	        Casilla casilla = tablero[fila][columna];
-	        if (!casilla.isEstaMarcada() && casilla.isEstaOculta()) {
-	            casilla.setEstaMarcada(true);
-	            if (casilla.isTieneMina()) {
-	                haMarcadoTodasMinas = haMarcadoTodasMinas();
-	            } else {
-	                haMarcadoCasillaSinMina = true;
-	            }
-	            return true;
-	        }
-	    }
-	    return false;
-	}
-
-	
 	private boolean haMarcadoTodasMinas() {
-        for (int i = 0; i < tam; i++) {
-            for (int j = 0; j < tam; j++) {
-                Casilla casilla = tablero[i][j];
-                if (casilla != null && casilla.isTieneMina() && !casilla.isEstaMarcada()) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
+		for (int i = 0; i < tam; i++) {
+			for (int j = 0; j < tam; j++) {
+				Casilla casilla = tablero[i][j];
+				if (casilla != null && casilla.isTieneMina() && !casilla.isEstaMarcada()) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
 
-    public boolean haDescubiertoCasillasConMina() {
-        for (int i = 0; i < tam; i++) {
-            for (int j = 0; j < tam; j++) {
-                Casilla casilla = tablero[i][j];
-                if (casilla != null && casilla.isTieneMina() && !casilla.isEstaOculta()) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    public boolean haMarcadoCasillaSinMina() {
-        for (int i = 0; i < tam; i++) {
-            for (int j = 0; j < tam; j++) {
-                Casilla casilla = tablero[i][j];
-                if (casilla != null && !casilla.isTieneMina() && casilla.isEstaMarcada()) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    public int causaTerminacionJuego() {
-        if (haMarcadoTodasMinas()) {
-            return 1; // Ha ganado
-        }
-        if (haDescubiertoCasillasConMina()) {
-            return 2; // Ha perdido
-        }
-        if (haMarcadoCasillaSinMina()) {
-            return 3; // Ha perdido
-        }
-        return 0; // Continua partida
-    }
-    
 	private void imprimirCabeceraFilas() {
 		System.out.print("     ");
 		for (int columnas = 0; columnas < tablero.length; columnas++)
@@ -286,5 +252,29 @@ public class JuegoBuscaMinas {
 				minasCercanas++;
 
 		tablero[fila][columna].setNumMinasCercanas(minasCercanas);
+	}
+
+	private boolean haDescubiertoCasillaConMina() {
+		for (int i = 0; i < tam; i++) {
+			for (int j = 0; j < tam; j++) {
+				Casilla casilla = tablero[i][j];
+				if (casilla != null && casilla.isTieneMina() && !casilla.isEstaOculta()) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	private boolean haMarcadoCasillaSinMina() {
+		for (int i = 0; i < tam; i++) {
+			for (int j = 0; j < tam; j++) {
+				Casilla casilla = tablero[i][j];
+				if (casilla != null && !casilla.isTieneMina() && casilla.isEstaMarcada()) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 }
