@@ -111,6 +111,10 @@ public class JuegoBuscaMinas {
 		return minasMarcadas;
 	}
 
+	public void setMinasMarcadas(int minasMarcadas) {
+		this.minasMarcadas = minasMarcadas;
+	}
+
 	// Métodos privados
 
 	private void instanciarCasillas() {
