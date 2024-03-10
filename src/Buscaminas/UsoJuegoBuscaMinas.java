@@ -193,8 +193,10 @@ public class UsoJuegoBuscaMinas {
 	public static void cargarTablero(int partidasJugadas) {
 		if (partidasJugadas == 0 || dificultaCambiada)
 			juego = new JuegoBuscaMinas(dificultad);
-		else
+		else {
 			juego.iniciarTablero();
+			juego.setMinasMarcadas(0);
+		}
 	}
 
 	public static boolean accionValidaCasillaInferiorA10x10(String casillaSeleccionada) {
