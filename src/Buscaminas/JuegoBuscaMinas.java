@@ -4,10 +4,10 @@ import java.util.Random;
 
 public class JuegoBuscaMinas {
 	private Casilla[][] tablero;
-	private int dificultad;
-	private int tam;
+	private int dificultad, tam, minasMarcadas;
 
 	public JuegoBuscaMinas(int dificultad) {
+		this.minasMarcadas = 0;
 		this.dificultad = dificultad;
 
 		if (dificultad == 1)
@@ -66,6 +66,10 @@ public class JuegoBuscaMinas {
 			Casilla casilla = tablero[fila][columna];
 			if (!casilla.isEstaMarcada() && casilla.isEstaOculta()) {
 				casilla.setEstaOculta(false); // Cambiar el estado de oculto a revelado
+				calcularMinasCercanas(fila, columna);
+				if (casilla.getNumMinasCercanas() == 0 && !casilla.isTieneMina()) {
+					descubrirCasillasCercanasSinMinasAlrededor(fila, columna);
+				}
 				return true;
 			}
 		}
@@ -77,6 +81,8 @@ public class JuegoBuscaMinas {
 			Casilla casilla = tablero[fila][columna];
 			if (!casilla.isEstaMarcada() && casilla.isEstaOculta()) {
 				casilla.setEstaMarcada(true);
+				if (casilla.isTieneMina())
+					minasMarcadas++;
 				return true;
 			}
 		}
@@ -84,16 +90,29 @@ public class JuegoBuscaMinas {
 	}
 
 	public int causaTerminacionJuego() {
-		if (haMarcadoTodasMinas()) {
+		if (haMarcadoTodasMinas())
 			return 1; // Ha ganado
-		}
-		if (haDescubiertoCasillaConMina()) {
+		if (haDescubiertoCasillaConMina())
 			return 2; // Ha perdido
-		}
-		if (haMarcadoCasillaSinMina()) {
+		if (haMarcadoCasillaSinMina())
 			return 3; // Ha perdido
-		}
 		return 0; // Continua partida
+	}
+
+	public int numeroMinas() {
+		if (dificultad == 2)
+			return 30;
+		if (dificultad == 3)
+			return 60;
+		return 10;
+	}
+
+	public int getMinasMarcadas() {
+		return minasMarcadas;
+	}
+
+	public void setMinasMarcadas(int minasMarcadas) {
+		this.minasMarcadas = minasMarcadas;
 	}
 
 	// Métodos privados
@@ -115,38 +134,6 @@ public class JuegoBuscaMinas {
 			} while (tablero[fila][columna].isTieneMina());
 			tablero[fila][columna].setTieneMina(true);
 		}
-		// Pruebas --> Hasta que estén hechas marcaCasilla() y descubrirCasilla()
-		tablero[5][5].setEstaMarcada(true);
-
-		tablero[0][0].setEstaOculta(false);
-		tablero[0][4].setEstaOculta(false);
-		tablero[0][7].setEstaOculta(false);
-		tablero[2][7].setEstaOculta(false);
-		tablero[3][3].setEstaOculta(false);
-		tablero[5][0].setEstaOculta(false);
-		tablero[7][0].setEstaOculta(false);
-		tablero[7][2].setEstaOculta(false);
-		tablero[7][7].setEstaOculta(false);
-	}
-
-	private int numeroMinas() {
-		if (dificultad == 2)
-			return 30;
-		if (dificultad == 3)
-			return 60;
-		return 10;
-	}
-
-	private boolean haMarcadoTodasMinas() {
-		for (int i = 0; i < tam; i++) {
-			for (int j = 0; j < tam; j++) {
-				Casilla casilla = tablero[i][j];
-				if (casilla != null && casilla.isTieneMina() && !casilla.isEstaMarcada()) {
-					return false;
-				}
-			}
-		}
-		return true;
 	}
 
 	private void imprimirCabeceraFilas() {
@@ -157,13 +144,12 @@ public class JuegoBuscaMinas {
 	}
 
 	private void calcularMinasCercanas(int fila, int columna) {
-		if ((fila > 0 && fila < 7) && (columna > 0 && columna < 7)) {
+		if ((fila > 0 && fila < tam - 1) && (columna > 0 && columna < tam - 1))
 			calcularMinasCercanasCasillaCentro(fila, columna);
-		} else if ((fila == 0 || fila == 7) && (columna == 0 || columna == 7))
+		else if ((fila == 0 || fila == tam - 1) && (columna == 0 || columna == tam - 1))
 			calcularMinasCercanasCasillaEsquina(fila, columna);
-		else {
+		else
 			calcularMinasCercanasCasillaBorde(fila, columna);
-		}
 	}
 
 	private void calcularMinasCercanasCasillaCentro(int fila, int columna) {
@@ -208,7 +194,7 @@ public class JuegoBuscaMinas {
 	}
 
 	private void calcularMinasCercanasCasillaBorde(int fila, int columna) {
-		if (fila == 0 || fila == 7)
+		if (fila == 0 || fila == tam - 1)
 			calcularMinasCercanasCasillaFilaBorde(fila, columna);
 		else
 			calcularMinasCercanasCasillaColumnaBorde(fila, columna);
@@ -254,13 +240,107 @@ public class JuegoBuscaMinas {
 		tablero[fila][columna].setNumMinasCercanas(minasCercanas);
 	}
 
+	private void descubrirCasillasCercanasSinMinasAlrededor(int fila, int columna) {
+		if ((fila > 0 && fila < tam - 1) && (columna > 0 && columna < tam - 1))
+			descubrirCasillasCercanasCasillaCentroSinMinasAlrededor(fila, columna);
+		else if ((fila == 0 || fila == tam - 1) && (columna == 0 || columna == tam - 1))
+			descubrirCasillasCercanasCasillaEsquinaSinMinasAlrededor(fila, columna);
+		else
+			descubrirCasillasCercanasCasillaBordeSinMinasAlrededor(fila, columna);
+	}
+
+	private void descubrirCasillasCercanasCasillaCentroSinMinasAlrededor(int fila, int columna) {
+		for (int i = -1; i <= 1; i += 2)
+			for (int j = -1; j <= 1; j++)
+				if (tablero[fila + i][columna + j].getNumMinasCercanas() == 0)
+					descubrirCasilla(fila + i, columna + j);
+
+		for (int j = -1; j <= 1; j += 2)
+			if (tablero[fila][columna + j].getNumMinasCercanas() == 0)
+				descubrirCasilla(fila, j);
+	}
+
+	private void descubrirCasillasCercanasCasillaEsquinaSinMinasAlrededor(int fila, int columna) {
+		int incrementoFila, incrementoColumna;
+
+		if (fila == 0)
+			incrementoFila = 1;
+		else
+			incrementoFila = -1;
+
+		if (columna == 0)
+			incrementoColumna = 1;
+		else
+			incrementoColumna = -1;
+
+		if (tablero[fila][columna + incrementoColumna].getNumMinasCercanas() == 0)
+			descubrirCasilla(fila, columna + incrementoColumna);
+
+		if (tablero[fila + incrementoFila][columna + incrementoColumna].getNumMinasCercanas() == 0)
+			descubrirCasilla(fila + incrementoFila, columna + incrementoColumna);
+
+		if (tablero[fila + incrementoFila][columna].getNumMinasCercanas() == 0)
+			descubrirCasilla(fila + incrementoFila, columna);
+	}
+
+	private void descubrirCasillasCercanasCasillaBordeSinMinasAlrededor(int fila, int columna) {
+		if (fila == 0 || fila == tam - 1)
+			descubrirCasillasCercanasCasillaFilaBordeSinMinasAlrededor(fila, columna);
+		else
+			descubrirCasillasCercanasCasillaColumnaBordeSinMinasAlrededor(fila, columna);
+	}
+
+	private void descubrirCasillasCercanasCasillaFilaBordeSinMinasAlrededor(int fila, int columna) {
+		int incremento;
+
+		if (fila == 0)
+			incremento = 1;
+		else
+			incremento = -1;
+
+		for (int j = -1; j <= 1; j += 2)
+			if (tablero[fila][columna + j].getNumMinasCercanas() == 0)
+				descubrirCasilla(fila, columna + j);
+
+		for (int j = -1; j <= 1; j++)
+			if (tablero[fila + incremento][columna + j].getNumMinasCercanas() == 0)
+				descubrirCasilla(fila + incremento, columna + j);
+	}
+
+	private void descubrirCasillasCercanasCasillaColumnaBordeSinMinasAlrededor(int fila, int columna) {
+		int incremento;
+
+		if (columna == 0)
+			incremento = 1;
+		else
+			incremento = -1;
+
+		for (int i = -1; i <= 1; i += 2)
+			if (tablero[fila + i][columna].getNumMinasCercanas() == 0)
+				descubrirCasilla(fila + i, columna + incremento);
+
+		for (int i = -1; i <= 1; i++)
+			if (tablero[fila + i][columna + incremento].getNumMinasCercanas() == 0)
+				descubrirCasilla(fila + i, columna + incremento);
+	}
+
+	private boolean haMarcadoTodasMinas() {
+		for (int i = 0; i < tam; i++) {
+			for (int j = 0; j < tam; j++) {
+				Casilla casilla = tablero[i][j];
+				if (casilla != null && casilla.isTieneMina() && !casilla.isEstaMarcada())
+					return false;
+			}
+		}
+		return true;
+	}
+
 	private boolean haDescubiertoCasillaConMina() {
 		for (int i = 0; i < tam; i++) {
 			for (int j = 0; j < tam; j++) {
 				Casilla casilla = tablero[i][j];
-				if (casilla != null && casilla.isTieneMina() && !casilla.isEstaOculta()) {
+				if (casilla != null && casilla.isTieneMina() && !casilla.isEstaOculta())
 					return true;
-				}
 			}
 		}
 		return false;
@@ -270,9 +350,8 @@ public class JuegoBuscaMinas {
 		for (int i = 0; i < tam; i++) {
 			for (int j = 0; j < tam; j++) {
 				Casilla casilla = tablero[i][j];
-				if (casilla != null && !casilla.isTieneMina() && casilla.isEstaMarcada()) {
+				if (casilla != null && !casilla.isTieneMina() && casilla.isEstaMarcada())
 					return true;
-				}
 			}
 		}
 		return false;
